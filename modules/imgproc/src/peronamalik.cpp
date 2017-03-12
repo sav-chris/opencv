@@ -1,24 +1,38 @@
+// This file is part of OpenCV project.
+// It is subject to the license terms in the LICENSE file found in the top-level directory
+// of this distribution and at http://opencv.org/license.html.
 
 #include "precomp.hpp"
-#include "opencl_kernels_imgproc.hpp"
-#include "cvconfig.h"
-
-#include <iostream>
-using namespace std;
 
 namespace cv
 {
+    using namespace std;
+
+    enum PeronaMalikFluxFunctions
+    {
+        PERONA_MALIK_EXPONENTIAL = 0,
+        PERONA_MALIK_INVERSE_QUADRATIC = 1
+    };
+
     void PeronaMalik(InputArray src, OutputArray dst, double timeStepSize, double k, int noOfTimeSteps, int fluxFunc )
     {
         CV_Assert(k != 0);
         CV_Assert(timeStepSize > 0);
         CV_Assert(noOfTimeSteps >= 0);
-        CV_Assert((fluxFunc == CV_PERONA_MALIK_EXPONENTIAL) || (fluxFunc == CV_PERONA_MALIK_INVERSE_QUADRATIC));
-        CV_Assert(src.size() == dst.size());
-        CV_Assert(src.type() == dst.type());
-        
+        CV_Assert((fluxFunc == PERONA_MALIK_EXPONENTIAL) || (fluxFunc == PERONA_MALIK_INVERSE_QUADRATIC));
+        CV_Assert(src.type() == CV_64FC1 || src.type() == CV_64FC3);
+
+        Mat _src = src.getMat();
+        dst.createSameSize(src, src.type());
         Mat _dst = dst.getMat();
-        Mat _src = src.getMat().clone();
+
+        if 
+        (
+            _src.data == _dst.data 
+        )
+        {
+            _src = _src.clone();
+        }
         
         int channels = _src.channels();
         int nRows = _src.rows;
@@ -51,7 +65,7 @@ namespace cv
                     
                     double cN, cS, cW, cE, cNE, cSE, cSW, cNW;
                     
-                    if (fluxFunc == CV_PERONA_MALIK_INVERSE_QUADRATIC)
+                    if (fluxFunc == PERONA_MALIK_INVERSE_QUADRATIC)
                     {
                         cN  = 1 / ( 1 + (nablaN * nablaN * oneOnkSquared));
                         cS  = 1 / ( 1 + (nablaS * nablaS * oneOnkSquared));
