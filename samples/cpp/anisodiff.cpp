@@ -9,7 +9,7 @@ using namespace cv;
 using namespace std;
 
 double timeStepSize = 1.0;
-double k = 0.02;
+double kappa = 0.02;
 int noOfTimeSteps_Exp=10;
 int noOfTimeSteps_InvQuad=10;
 
@@ -21,10 +21,10 @@ const char* window_name2 = "Anisodiff : Inverse Quadratic Flux";
 // define a trackbar callback
 static void onTrackbar(int, void*)
 {
-    PeronaMalik(src_gray, dst_Exp, timeStepSize, k, noOfTimeSteps_Exp, CV_PERONA_MALIK_EXPONENTIAL);
+    PeronaMalik(src_gray, dst_Exp, timeStepSize, kappa, noOfTimeSteps_Exp, CV_PERONA_MALIK_EXPONENTIAL);
     imshow(window_name1, dst_Exp);
 
-    PeronaMalik(src_gray, dst_InvQuad, timeStepSize, k, noOfTimeSteps_InvQuad, CV_PERONA_MALIK_INVERSE_QUADRATIC);
+    PeronaMalik(src_gray, dst_InvQuad, timeStepSize, kappa, noOfTimeSteps_InvQuad, CV_PERONA_MALIK_INVERSE_QUADRATIC);
     imshow(window_name2, dst_InvQuad);
 }
 
